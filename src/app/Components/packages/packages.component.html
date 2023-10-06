@@ -11,7 +11,7 @@
             </tr>
             <tr *ngFor="let time of timeList">
                 <td class="days">{{time.time}}</td>
-                <td class="td-border"  *ngFor="let room of roomList"></td>
+                <td class="td-border"  *ngFor="let room of roomList" [ngClass]="checkIfRoomBooked(room.roomId,time.timeId)?'bg-success':''"></td>
             </tr>
         </table>
     </div>

@@ -7,7 +7,7 @@ import { Meetings } from '../Models/meetings';
   providedIn: 'root'
 })
 export class MeetingServiceService {
-  baseUrl: string='http://localhost:5239/api/Meeting';
+  baseUrl: string='http://localhost:5239/api/m3';
   constructor(private http: HttpClient) { }
   public getAllMeeting():Observable<Meetings[]>{
     return this.http.get<Meetings[]>(this.baseUrl);
