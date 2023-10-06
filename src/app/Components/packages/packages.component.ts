@@ -18,7 +18,11 @@ export class PackagesComponent {
   timeList: any[] = [];
   roomList: any[] = [];
   meetList: any[]=[];
+  //let dates = Date.UTC;
+  meetinglist:Meetings = {} as Meetings;
+  date:any="";
   http: any;
+  router: any;
   constructor(private calservices: RoomServiceService, private timeservices : TimeServiceService,private meetingservices:MeetingServiceService){}
   // ngOnInit(): void {
   //   this.calservices.GetAllRoom().subscribe((data : Room[]) => {
@@ -26,6 +30,7 @@ export class PackagesComponent {
   //     //console.log(data); // Check its adding or not
   //   })  
   // }
+
   meetingObj = {
     "meetingId": 0,
     "meetingDetails": "string",
@@ -37,7 +42,7 @@ export class PackagesComponent {
     "roomId": 0
   }
   bookingList: any;
-
+  currentDate:Date=new Date();
   ngOnInit(): void {
   this.timeservices.GetAllTime().subscribe((data:TimeList[])=>{
     this.timeList=data;
@@ -48,9 +53,19 @@ export class PackagesComponent {
   this.meetingservices.getAllMeeting().subscribe((data : Meetings[]) => {
     this.meetList=data;
   }) 
+  setInterval(() => {
+    //debugger;
+    let vars = Date.now;
+    console.log(vars);
+    this.currentDate=new Date();
+  },24*60*60*1000);
+  // setTimeout(() => {
+  //   window.location.reload();
+  // }, 300000);
+  
 }
-  checkIfRoomBooked(roomId:number,timeId:number){
-  const bookingData =this.meetList.find(m=>m.roomId==roomId && (m.startTime<=timeId && m.endTime>=timeId));
+  checkIfRoomBooked(roomId:number,timeId:number,startDate:string){
+    const bookingData =this.meetList.find(m=>m.roomId==roomId && (m.startTime<=timeId && m.endTime>=timeId && m.startDate == this.currentDate) );
   if(bookingData){
     return true;
   }
@@ -62,6 +77,7 @@ export class PackagesComponent {
     const model = document.getElementById("myModal");
     if (model != null) {
       model.style.display = "block";
+      alert(new Date());
     }
   }
   closeBooking() {
@@ -71,10 +87,14 @@ export class PackagesComponent {
     }
   }
   saveBooking() {
-    alert("Booking done successfully")
-
+    debugger;
+      this.meetingservices.addMeeting(this.meetinglist).subscribe((meet:any) => {
+        alert("Booking done successfully")
+        window.location.reload();
+        this.router.navigate(["/"]);
+        console.log(this.meetinglist);
+      })
   }
-
 }
 
 

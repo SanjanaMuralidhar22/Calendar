@@ -1,74 +1,96 @@
 <br>
-<h6><i class="fa-regular fa-calendar-days"></i>Meeting Calendar<button class='btn btn-sm btn-primary' (click)="openBooking()">Create</button>
-<input  type="date" class="form-control" placeholder="Select Date"></h6>
+<h6>Meeting Calendar<button class='btn btn-sm btn-primary' (click)="openBooking()">Create</button>
+    <label for="start">Start date:</label>
+    <input type="date" id="start" name="trip-start" value="2023-10-06" min="2023-01-01" max="2026-12-31" [(ngModel)]="currentDate"/>
+</h6>
 <br>
 <div class="row">
     <div class="col-6">
-        <table> 
+        <table>
             <tr>
                 <td style width="4%;" class="days">Room</td>
                 <td class="days" *ngFor="let room of roomList" class="days">{{room.roomName}}</td>
             </tr>
             <tr *ngFor="let time of timeList">
                 <td class="days">{{time.time}}</td>
-                <td class="td-border"  *ngFor="let room of roomList" [ngClass]="checkIfRoomBooked(room.roomId,time.timeId)?'bg-success':''"></td>
+                <td class="td-border" *ngFor="let room of roomList"
+                    [ngClass]="checkIfRoomBooked(room.roomId,time.timeId,meetinglist.startDate)?'bg-danger':''"></td>
             </tr>
         </table>
     </div>
 </div>
-
-
 <!-- The Modal -->
 <div class="modal" id="myModal">
     <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Add Meeting</h4>
-          <button type="button" class="btn-close" (click)="closeBooking()" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Meeting</h4>
+                <button type="button" class="btn-close" (click)="closeBooking()" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="col-6">
+                            <label for="">Enter Meeting Detail</label>
+                            <input type="string" class="form-control" [(ngModel)]="meetinglist.meetingDetails">
+                        </div>
+                        <label for="">Select Room</label>
+                        <select [(ngModel)]="meetinglist.roomId" id="">
+                            <option *ngFor="let room of roomList" [value]="room.roomId">{{room.roomName}} </option>
+                        </select>
+                        <!-- <select [(ngModel)]="meetinglist.roomId" id="">
+                            <option *ngFor="let room of roomList" [value]="room.roomId">{{room.roomName}}</option>
+                        </select> -->
+                    </div>
+                    <div class="col-6">
+                        <label for="">Select Start Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="meetinglist.startDate">
+                    </div>
+                    <!-- <div class="col-6">
+                        <label for="">Select End Date</label>
+                        <input type="date" class="form-control" [(ngModel)]="meetinglist.endDate">
+                    </div> -->
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="">Select Start Time </label>
+                        <select [(ngModel)]="meetinglist.startTime" id="">
+                            <option *ngFor="let time of timeList" [value]="time.timeId">{{time.time}}</option>
+                        </select>
+
+                        <!-- <select [(ngModel)]="meetinglist.startTime" id="">
+                            <option *ngFor="let meet of timeList" [value]="meet.timeId">{{meet.time}} </option>
+                        </select> -->
+                    </div>
+                    <div class="col-6">
+                        <label for="">Select End Time</label>
+                        <select [(ngModel)]="meetinglist.endTime" id="">
+                            <option *ngFor="let time of timeList" [value]="time.timeId">{{time.time}}</option>
+                        </select>
+                        <!-- <select [(ngModel)]="meetinglist.endTime" id="">
+                            <option *ngFor="let time of timeList" [value]="time.timeId">{{time.time}} </option>
+                        </select> -->
+                    </div>
+                    <div class="col-6">
+                        <label for="">Select Employee ID</label>
+
+                        <input type="number" placeholder="Enter your EplooyeeId" [(ngModel)]="meetinglist.employeeId" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal"
+                    (click)="saveBooking()">Save</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                    (click)="closeBooking()">Close</button>
+            </div>
+
         </div>
-  
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-6">
-                <label for="">Select Room</label>
-                <select [(ngModel)]="meetingObj.roomId" id="">
-                    <option *ngFor="let room of roomList"  [value]="room.roomId">{{room.roomName}} </option>
-                </select>
-            </div>
-            <div class="col-6">
-                <label for="">Select Start Date</label>
-                <input type="date" class="form-control" [(ngModel)]="meetingObj.startDate">
-            </div>
-            <div class="col-6">
-                <label for="">Select End Date</label>
-                <input type="date" class="form-control" [(ngModel)]="meetingObj.endDate">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-                <label for="">Select Start Time </label>
-                <select [(ngModel)]="meetingObj.startTime" id="">
-                    <option *ngFor="let time of timeList"  [value]="time.timeId">{{time.time}} </option>
-                </select>
-            </div>
-            <div class="col-6">
-                <label for="">Select End Time</label>
-                <select [(ngModel)]="meetingObj.endTime" id="">
-                    <option *ngFor="let time of timeList"  [value]="time.timeId">{{time.time}} </option>
-                </select>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Modal footer -->
-        <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="saveBooking()">Save</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="closeBooking()">Close</button>
-        </div>
-  
-      </div>
     </div>
-  </div>
+</div>
